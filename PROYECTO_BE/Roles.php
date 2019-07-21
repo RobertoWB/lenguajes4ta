@@ -1,11 +1,10 @@
 <DOCTYPE HTML>
     <meta charset = "utf8"/>
     <?php
-    //crear conexion con oracle
-    $conexion = oci_connect("hr","hr","localhost/xe");
 
+    $conexion = oci_connect("hr","hr","localhost/xe");
     $fun = $_GET['id'];
-    debug_to_console($fun);
+
     if(!$conexion){
         $m = oci_error();
         echo $m('message'),"n";
@@ -14,12 +13,12 @@
         //echo "Conexion con exito a Oracle";
         switch($fun){
             case 0:
+            debug_to_console($fun);
             listar_rol();
             break;
-    
+
             case 1:
-            agregar_rol();
-        
+            agregar_rol(); 
             break;
 
             case 2:
@@ -54,9 +53,9 @@
     print "</table>\n";
     */
     function agregar_rol(){
-    $Rid = $_GET['id_rol'];
+    $conexion = oci_connect("hr","hr","localhost/xe");    
     $Rnom = $_GET['nom_rol'];
-    $sql = "CALL INSERTAR_ROL($Rid,'$Rnom')";
+    $sql = "CALL INSERTAR_ROL('$Rnom')";
     $stid = oci_parse($conexion,$sql);
     oci_execute($stid);
     oci_free_statement($stid);
@@ -65,7 +64,7 @@
     }
 
     function listar_rol(){
-        $conexion = oci_connect("hr","hr","localhost/xe");
+    $conexion = oci_connect("hr","hr","localhost/xe");
     $sql = "SELECT * FROM TBL_ROLES";
     $stid =oci_parse($conexion,$sql);
     $res = oci_execute($stid);
@@ -79,10 +78,15 @@
     print "</tr>\n";
     }
     print "</table>\n";
+    oci_free_statement($stid);
+    oci_close($conexion);
     }
 
     function actualizar_rol(){
-    $sql = "CALL PRUEBA2(2,4,'PRUEBA')";
+    $Rid = $_GET['id_rol'];
+    $Rnom = $_GET['nom_rol'];
+    $conexion = oci_connect("hr","hr","localhost/xe");    
+    $sql = "CALL ACTUALIZAR_ROL($Rid,'$Rnom')";
     $stid = oci_parse($conexion,$sql);
     oci_execute($stid);
     oci_free_statement($stid);
@@ -91,7 +95,9 @@
     }
 
     function eliminar_rol(){
-    $sql = "CALL ELIMINAR_ROL(4)";
+    $conexion = oci_connect("hr","hr","localhost/xe");
+    $Rid = $_GET['id_rol'];
+    $sql = "CALL ELIMINAR_ROL($Rid)";
     $stid = oci_parse($conexion,$sql);
     oci_execute($stid);
     oci_free_statement($stid);
@@ -99,7 +105,6 @@
     //header('location: ../PROYECTO_FE/index.html');
     }
 
-    
 
     function debug_to_console( $data ) {
         $output = $data;
@@ -107,9 +112,9 @@
             $output = implode( ',', $output);
     
         echo "<script>console.log( 'Debug Objects: " . $output . "' );</script>";
+        
     }
 
+    oci_close($conexion);
 
-?>
-
-
+    ?>
