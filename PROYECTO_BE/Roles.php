@@ -13,7 +13,7 @@
         //echo "Conexion con exito a Oracle";
         switch($fun){
             case 0:
-            //debug_to_console($fun);
+            debug_to_console($fun);
             listar_rol();
             break;
 
