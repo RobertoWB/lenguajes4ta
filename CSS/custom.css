@@ -1,3 +1,5 @@
-input{
-    width: 40%;
+
+.invisible{
+    visibility: hidden;
+    display: block;
 }

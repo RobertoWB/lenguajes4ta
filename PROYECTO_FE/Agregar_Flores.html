@@ -69,30 +69,27 @@
       </nav>
       
       <main role="main">
-
+      <form action="../PROYECTO_BE/Flores.php">
         <div class="jumbotron">
             <div class='container'>
                     <h2 class='text-center'>Agregar Flor</h2>
-                    <label class='col-sm-3 control-label'>ID de Flor</label>
-                    <div class='form-group'>
-                        <input style="weight=30%" type='text' class='form-control' placeholder='' required='required' id='id_flor' disabled></input>
-                    </div>
                     <label class='col-sm-3 control-label'>Nombre de la flor</label>
                     <div class='form-group'>
-                        <input type='text' class='form-control' placeholder='' required='required' id='nom_flor'></input>
+                        <input type='text' class='form-control' placeholder='' required='required' id='nom_flor' name='nom_flor'></input>
                     </div>
                     <label class='col-sm-3 control-label'>Tipo de flor</label>
                     <div class='form-group'>
-                        <input type='text' class='form-control' placeholder='' required='required' id='tipo_flor'></input>
+                        <input type='text' class='form-control' placeholder='' required='required' id='tipo_flor' name='tipo_flor'></input>
                     </div>
                     <label class='col-sm-3 control-label'>Detalles</label>
                     <div class='form-group'>
-                        <input type='text' class='form-control' placeholder='' required='required' id='detalles'></input>
+                        <input type='text' class='form-control' placeholder='' required='required' id='detalles' name='detalles'></input>
                     </div>
-                    <div onclick='' class='btn btn-primary btn-block'>Agregar</div>
+                    <button class='btn btn-primary btn-block' type="submit" value="1" name="id" >Agregar</button>
                     <div onClick='' class='btn btn-sm btn-danger'>Volver</div>
             </div>  
         </div>  
+      </form>
         <!-- Main jumbotron for a primary marketing message or call to action 
         <div class="jumbotron">
           <div class="container">

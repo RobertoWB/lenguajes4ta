@@ -10,7 +10,7 @@
       
           <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/jumbotron/">
           <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-      
+          <link rel="stylesheet" href="../CSS/custom.css">
           <!-- Bootstrap core CSS -->
       <link href="/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
           <style>
@@ -69,22 +69,29 @@
       </nav>
       
       <main role="main">
-
+      <form action="../PROYECTO_BE/Roles.php">
         <div class="jumbotron">
             <div class='container'>
                     <h2 class='text-center'>Agregar Rol</h2>
-                    <label class='col-sm-3 control-label'>ID de Rol</label>
+<!--
+                      <label class='col-sm-3 control-label'>ID de Rol</label>
                     <div class='form-group'>
-                        <input type='text' class='form-control' placeholder='' required='required' id='id_rol' disabled></input>
+                        <input type='text' class='form-control' placeholder='' required='required' id='id_rol' name="id_rol"></input>
                     </div>
+                  -->
                     <label class='col-sm-3 control-label'>Nombre de Rol</label>
                     <div class='form-group'>
-                        <input type='text' class='form-control' placeholder='' required='required' id='nom_rol'></input>
+                        <input type='text' class='form-control' placeholder='' required='required' id='nom_rol' name="nom_rol"></input>
                     </div>
-                    <div onclick='' class='btn btn-primary btn-block'>Agregar</div>
-                    <div onClick='' class='btn btn-sm btn-danger'>Volver</div>
+                  <!--  <div  type='submit' onclick='' class='btn btn-primary btn-block'>Agregar</div> -->
+                    <!--<input class="invisible" type="button" value="1"  name="id" >-->
+                    <!--Funciono el boton-->
+                    <button class='btn btn-primary btn-block' type="submit" value="1" name="id" >Agregar</button>
+                    <button href="Listar_Roles.php" type="button" class="btn btn-success">listar</button>
+                    <div onClick="" href="../PROYECTO_FE/Listar_Roles.php"  class='btn btn-sm btn-danger'>Volver</div>
             </div>  
         </div>  
+      </form>
         <!-- Main jumbotron for a primary marketing message or call to action 
         <div class="jumbotron">
           <div class="container">
