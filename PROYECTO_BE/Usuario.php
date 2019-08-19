@@ -1,49 +1,70 @@
-<DOCTYPE HTML>
-    <meta charset = "utf8"/>
+<meta charset = "utf8"/>
     <?php
 
     $conexion = oci_connect("hr","hr","localhost/xe");
-    //Aqui se obtiene el id para que se meta en el switch
-    $fun = $_GET['id'];
+    $rol = '';
+    $name = '';
+    $ape = '';
+    $nick = '';
+    $pass = '';
+    $update = false;
+    $Uid  = 0;
 
-    if(!$conexion){
-        $m = oci_error();
-        echo $m('message'),"n";
-        exit;
-    }else{
-        //echo "Conexion con exito a Oracle";
-        switch($fun){
-            case 0:
-            agregar_usuario(); 
-            break;
+    if(isset($_GET['save'])){
 
-            case 1:
-            actualizar_usuario();
-            break;
+        $conexion = oci_connect("hr","hr","localhost/xe");    
+        $Urol = $_REQUEST['id_rol'];
+        $Unom = $_REQUEST['nombre'];
+        $Uapellido = $_REQUEST['apellido'];
+        $Unick = $_REQUEST['nick'];
+        $Upass = $_REQUEST['pass'];
+        $sql = "CALL INSERTAR_USUARIO('$Urol','$Unom','$Uapellido','$Unick','$Upass')";
+        $stid = oci_parse($conexion,$sql);
+        oci_execute($stid);
+        oci_free_statement($stid);
+        oci_close($conexion);
+        header('location: ../PROYECTO_FE/FE_Usuarios.php');
+
+
+    }
     
-            case 2:
-            eliminar_usuario();
-            break;
-        }
+    if(isset($_GET['delete'])){
+        $conexion = oci_connect("hr","hr","localhost/xe");
+        $Uid = $_REQUEST['delete'];
+        $sql = "CALL ELIMINAR_USUARIO($Uid)";
+        $stid = oci_parse($conexion,$sql);
+        oci_execute($stid);
+        oci_free_statement($stid);
+        oci_close($conexion);
+        header('location: ../PROYECTO_FE/FE_Usuarios.php');
+
     }
 
-    function agregar_usuario(){
-    $conexion = oci_connect("hr","hr","localhost/xe");    
-    $Urol = $_GET[''];
-    $Unom = $_GET[''];
-    $Uapellido = $_GET[''];
-    $Unick = $_GET[''];
-    $Upass = $_GET[''];
-    $sql = "CALL INSERTAR_USUARIO('$Urol','$Unom','$Uapellido','$Unick','$Upass')";
-    $stid = oci_parse($conexion,$sql);
-    oci_execute($stid);
-    oci_free_statement($stid);
-    oci_close($conexion);
-    header('location: ../PROYECTO_FE/Listar_Usuarios.php');
+    if(isset($_GET['edit'])){
+        $Uid = $_REQUEST['edit'];
+        debug_to_console( $Uid );
+        $update = true;
+        $conexion = oci_connect("hr","hr","localhost/xe"); 
+        $sql1 = "SELECT ID_ROL, NOMBRE, APELLIDO, NOMBRE_USUARIO, CONTRASEÑA FROM TBL_USUARIOS WHERE ID_USUARIO='$Uid' ";  
+        $stid1 = oci_parse($conexion,$sql1);
+        oci_define_by_name($stid1, 'ID_ROL', $rol);
+        oci_define_by_name($stid1, 'NOMBRE', $name);
+        oci_define_by_name($stid1, 'APELLIDO', $ape);
+        oci_define_by_name($stid1, 'NOMBRE_USUARIO', $nick);
+        oci_define_by_name($stid1, 'CONTRASENA', $pass);
+        oci_execute($stid1);
+            if(count($stid1)==1){
+                $row = oci_fetch_array($stid1, OCI_ASSOC);
+                    $rol = $row['ID_ROL'];
+                    $name = $row['NOMBRE'];
+                    $ape = $row['APELLIDO'];
+                    $nick = $row['NOMBRE_USUARIO'];
+                    $pass = $row['CONTRASENA'];
+            }
     }
 
+    if(isset($_GET['update'])){
 
-    function actualizar_usuario(){
         $Uid = $_GET[''];
         $Urol = $_GET[''];
         $Unom = $_GET[''];
@@ -57,20 +78,8 @@
     oci_free_statement($stid);
     oci_close($conexion);
     //header('location: ../PROYECTO_FE/index.html');
-    }
 
-    function eliminar_usuario(){
-    $conexion = oci_connect("hr","hr","localhost/xe");
-    //Id del usuario
-    $Uid = $_GET[''];
-    $sql = "CALL ELIMINAR_FLORES($Uid)";
-    $stid = oci_parse($conexion,$sql);
-    oci_execute($stid);
-    oci_free_statement($stid);
-    oci_close($conexion);
-    //header('location: ../PROYECTO_FE/index.html');
     }
-
 
     function debug_to_console( $data ) {
         $output = $data;
