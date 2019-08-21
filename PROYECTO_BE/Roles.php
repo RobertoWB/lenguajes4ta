@@ -8,7 +8,6 @@
 
 
     if(isset($_POST['save'])){
-
         $conexion = oci_connect("hr","hr","localhost/xe");    
         $Rnom = $_REQUEST['nom_rol'];
         $sql = "CALL INSERTAR_ROL('$Rnom')";
@@ -21,7 +20,6 @@
     }
     
     if(isset($_GET['delete'])){
-
         $conexion = oci_connect("hr","hr","localhost/xe");
         $Rid = $_REQUEST['delete'];
         $sql = "CALL ELIMINAR_ROL($Rid)";
@@ -33,7 +31,6 @@
     }
 
     if(isset($_GET['edit'])){
-        
         $Rid = $_REQUEST['edit'];
         $update = true;
         $conexion = oci_connect("hr","hr","localhost/xe"); 
@@ -46,7 +43,6 @@
                     $name = $row['NOMBRE'];
             }
     }
-    
     if(isset($_POST['update'])){
         $rol_id = $_REQUEST['id'];
         $Rnom = $_REQUEST['nom_rol']; 

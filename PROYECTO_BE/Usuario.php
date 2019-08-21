@@ -9,7 +9,7 @@
     $pass = '';
     $update = false;
     $Uid  = 0;
-    
+
     if(isset($_GET['save'])){
 
         $conexion = oci_connect("hr","hr","localhost/xe");    
