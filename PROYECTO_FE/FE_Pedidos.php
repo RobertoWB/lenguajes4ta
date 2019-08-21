@@ -58,24 +58,19 @@
           </div>
         </li>
       </ul>
-      <!-- 
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
-       -->
     </div>
   </nav>
-  
+  <?php require_once '../PROYECTO_BE/Pedidos.php' ?>
+
   <main role="main">
-  <form action="../PROYECTO_BE/Usuario.php">
+  <form action="../PROYECTO_BE/Pedidos.php" method="POST">
     <div class="jumbotron">
 
         <div class='container'>
-                <h2 class='text-center'>Lista de Usuario</h2>
+        <h2 class='text-center'>Ventas</h2>
                 <?php 
               $conexion = oci_connect("hr","hr","localhost/xe");
-              $sql = "SELECT ID_USUARIO, ID_ROL, NOMBRE, APELLIDO, NOMBRE_USUARIO FROM TBL_USUARIOS order by ID_USUARIO";
+              $sql = "SELECT * FROM TBL_PEDIDOS order by ID_PEDIDO";
               $stid =oci_parse($conexion,$sql);
               $res = oci_execute($stid);
 
@@ -84,47 +79,62 @@
               print "<tr>\n";
               print "<thead>";
               print "<th>ID</th>";
-              print "<th>ID Rol</th>";
-              print "<th>NOMBRE</th>";
-              print "<th>Apellido</th>";
-              print "<th>Nombre de Usuario</th>";
+              print "<th>ID de flor</th>";
+              print "<th>Cantidad</th>";
+              print "<th>Fecha de Entrega</th>";
+              print "<th>Fecha de Pedido</th>";
+              print "<th>Accion</th>";
               print "</thead>";
+              
               while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
               foreach ($row as $item) {
                   print "    <td>" . ($item !== null ? htmlentities($item, ENT_QUOTES) : "&nbsp;") . "</td>\n";
-
               }
-              print "<td><button href='' type='button' class='btn btn-danger'>Eliminar</button></td>";
-              print "<td><button href='' type='button' class='btn btn-warning'>Actualizar</button></td>";
+              ?>
+             <td><a href="../PROYECTO_BE/Pedidos.php?delete=<?php echo $row['ID_PEDIDO']; ?>" class='btn btn-danger' >Eliminar</a>
+                <a href="FE_Pedidos.php?edit=<?php echo $row['ID_PEDIDO']; ?>"class='btn btn-warning'>Actualizar</a></td>
+              <?php
               print "</tr>\n";
               }
               print "</table>\n";
               print "</div>";
-              echo '<button href="Agregar_Flores.html" type="button" class="btn btn-success">Agregar</button>';
               oci_free_statement($stid);
               oci_close($conexion);
+        ?>
+        <form action="../PROYECTO_BE/Pedidos.php" method="POST">
+        <input type="hidden" name="id" value="<?php echo $Pid ; ?>">
+        <div class="jumbotron">
+            <div class='container'>
 
+                    <h2 class='text-center'>Agregar Pedido </h2>
+                    <label class='col-sm-3 control-label'>Id de Flor</label>
+                    <div class='form-group'>
+                        <input type='text' class='form-control' value="<?php echo $idFlor; ?>"  id='input_IdFlor' name='input_IdFlor'>
+                    </div>
+                    <label class='col-sm-3 control-label'>Fecha de Entrega</label>
+                    <div class='form-group'>
+                        <input type='date' class='form-control' value="<?php echo $fechaEntrega; ?>" id='input_FechaEntrega' name='input_FechaEntrega'>
+                    </div>
+                    <label class='col-sm-3 control-label'>Cantidad de Rollos</label>
+                    <div class='form-group'>
+                        <input type='text' class='form-control' value="<?php echo $cantidad; ?>" id='input_CantidadRollos' name='input_CantidadRollos'>
+                    </div>
+                    <label class='col-sm-3 control-label'>Fecha de Pedido</label>
+                    <div class='form-group'>
+                        <input type='date' class='form-control' value="<?php echo $fechaPedido; ?>" id='input_FechaPedido' name='input_FechaPedido'>
+                    </div>
 
-        ?>  
-
-                 <!--
-                  <label class='col-sm-3 control-label'>ID de Rol</label>
-                <div class='form-group'>
-                    <input type='text' class='form-control' placeholder='' required='required' id='id_rol' name="id_rol"></input>
-                </div>
-              
-                <label class='col-sm-3 control-label'>Nombre de Rol</label>
-                <div class='form-group'>
-                    <input type='text' class='form-control' placeholder='' required='required' id='nom_rol' name="nom_rol"></input>
-                </div>
-                <div  type='submit' onclick='' class='btn btn-primary btn-block'>Agregar</div> -->
-                <!--<input class="invisible" type="button" value="1"  name="id" >-->
-                <!--Funciono el boton
-                <button class='btn btn-primary btn-block' type="submit" value="0" name="id">Agregar</button>
-                <div onClick=''  class='btn btn-sm btn-danger'>Volver</div>
-      -->
-        </div> 
-      
+                    <?php 
+                      if($update == true):
+                    ?>
+                    <button class='btn btn-primary btn-block' type="submit" value="2" name='update'>Actualizar</button>
+                      <?php else: ?>
+                    <button class='btn btn-primary btn-block' type="submit" value="1" name='save'>Ingresar</button>
+                      <?php endif; ?>
+            </div>  
+        </div>  
+      </form>
+        </div>     
     </div>  
   </form>
   </main>

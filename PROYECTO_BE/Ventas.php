@@ -1,75 +1,91 @@
-<DOCTYPE HTML>
     <meta charset = "utf8"/>
     <?php
 
     $conexion = oci_connect("hr","hr","localhost/xe");
-    //Aqui se obtiene el id para que se meta en el switch
-    $fun = $_GET['id'];
+    $update = false;
+    $Vid  = 0;
+    $idFlor  = "";
+    $idUsuario  = "";
+    $Cliente  = "";
+    $cantidad  = "";
+    $fecha_Venta  = "";
 
-    if(!$conexion){
-        $m = oci_error();
-        echo $m('message'),"n";
-        exit;
-    }else{
-        //echo "Conexion con exito a Oracle";
-        switch($fun){
-            case 0:
-            agregar_venta(); 
-            break;
 
-            case 1:
-            actualizar_venta();
-            break;
+
+    if(isset($_POST['save'])){
+        $conexion = oci_connect("hr","hr","localhost/xe");    
+        $Vflor = $_REQUEST['inputFlor'];
+        $Vusuario = $_REQUEST['inputUsuario'];
+        $Vnombre_cliente = $_REQUEST['inputNombre'];
+        $Vcantidad = $_REQUEST['inputCantidad'];
+        $Vfecha_venta = $_REQUEST['inputFecha'];
+        $newDate = date("d/m/y", strtotime($Vfecha_venta));
+        $sql = "CALL INSERTAR_VENTAS('$Vflor','$Vusuario','$Vnombre_cliente','$Vcantidad','$newDate')";
+        $stid = oci_parse($conexion,$sql);
+        oci_execute($stid);
+        oci_free_statement($stid);
+        oci_close($conexion);
+        header('location: ../PROYECTO_FE/FE_Ventas.php');
+    }
     
-            case 2:
-            eliminar_venta();
-            break;
-        }
+    if(isset($_GET['delete'])){
+
+        $conexion = oci_connect("hr","hr","localhost/xe");
+        $Vid = $_REQUEST['delete'];
+        $sql = "CALL ELIMINAR_VENTAS($Vid)";
+        $stid = oci_parse($conexion,$sql);
+        oci_execute($stid);
+        oci_free_statement($stid);
+        oci_close($conexion);
+        header('location: ../PROYECTO_FE/FE_Ventas.php');
+
     }
 
-    function agregar_venta(){
+    if(isset($_GET['edit'])){
+        $Vid = $_REQUEST['edit'];
+        $update = true;
+        $conexion = oci_connect("hr","hr","localhost/xe"); 
+        $sql1 = "SELECT ID_FLOR, ID_USUARIO, NOMBRE_CLIENTE, CANTIDAD, FECHA_VENTA FROM TBL_VENTAS WHERE ID_VENTAS='$Vid' ";  
+        $stid1 = oci_parse($conexion,$sql1);
+        oci_define_by_name($stid1, 'ID_FLOR', $idFlor);
+        oci_define_by_name($stid1, 'ID_USUARIO', $idUsuario);
+        oci_define_by_name($stid1, 'NOMBRE_CLIENTE', $Cliente);
+        oci_define_by_name($stid1, 'CANTIDAD', $cantidad);
+        oci_define_by_name($stid1, 'FECHA_VENTA', $fecha_Venta);
+        oci_execute($stid1);
+            if(count($stid1)==1){
+                $row = oci_fetch_array($stid1, OCI_ASSOC);
+                    $idFlor = $row['ID_FLOR'];
+                    $idUsuario = $row['ID_USUARIO'];
+                    $Cliente = $row['NOMBRE_CLIENTE'];
+                    $cantidad = $row['CANTIDAD'];
+                    $fecha_Venta = date("Y-m-d",strtotime($row['FECHA_VENTA']));
+            }
+    }
+
+    if(isset($_POST['update'])){
+
+        $Vid = $_REQUEST['id'];
+        $Vflor = $_REQUEST['inputFlor'];
+        $Vusuario = $_REQUEST['inputUsuario'];
+        $Vnombre_cliente = $_REQUEST['inputNombre'];
+        $Vcantidad = $_REQUEST['inputCantidad'];
+        $Vfecha_venta = $_REQUEST['inputFecha'];
+        $newDate = date("d/m/y", strtotime($Vfecha_venta));
     $conexion = oci_connect("hr","hr","localhost/xe");    
-    $Vflor = $_GET[''];
-    $Vusuario = $_GET[''];
-    $Vnombre_cliente = $_GET[''];
-    $Vcantidad = $_GET[''];
-    $Vfecha_venta = $_GET[''];
-    $sql = "CALL INSERTAR_VENTAS('$Vflor','$Vusuario','$Vnombre_cliente','$Vcantidad','$Vfecha_venta')";
+    $sql = "CALL ACTUALIZAR_VENTAS('$Vid','$Vflor','$Vusuario','$Vnombre_cliente','$Vcantidad','$newDate')";
     $stid = oci_parse($conexion,$sql);
     oci_execute($stid);
     oci_free_statement($stid);
     oci_close($conexion);
-    header('location: ../PROYECTO_FE/Listar_Inventario.php');
+    header('location: ../PROYECTO_FE/FE_Ventas.php');
+
     }
 
 
-    function actualizar_venta(){
-        $Vid = $_GET[''];
-        $Vflor = $_GET[''];
-        $Vusuario = $_GET[''];
-        $Vnombre_cliente = $_GET[''];
-        $Vcantidad = $_GET[''];
-        $Vfecha_venta = $_GET[''];
-    $conexion = oci_connect("hr","hr","localhost/xe");    
-    $sql = "CALL ACTUALIZAR_VENTAS('$Vid','$Vflor','$Vusuario','$Vnombre_cliente','$Vcantidad','$Vfecha_venta')";
-    $stid = oci_parse($conexion,$sql);
-    oci_execute($stid);
-    oci_free_statement($stid);
-    oci_close($conexion);
-    //header('location: ../PROYECTO_FE/index.html');
-    }
 
-    function eliminar_venta(){
-    $conexion = oci_connect("hr","hr","localhost/xe");
-    //Id del inventario
-    $Vid = $_GET[''];
-    $sql = "CALL ELIMINAR_VENTAS($Vid)";
-    $stid = oci_parse($conexion,$sql);
-    oci_execute($stid);
-    oci_free_statement($stid);
-    oci_close($conexion);
-    //header('location: ../PROYECTO_FE/index.html');
-    }
+
+
 
 
     function debug_to_console( $data ) {

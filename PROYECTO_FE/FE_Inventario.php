@@ -58,24 +58,19 @@
           </div>
         </li>
       </ul>
-      <!-- 
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
-       -->
     </div>
   </nav>
-  
+  <?php require_once '../PROYECTO_BE/Inventario.php' ?>
+
   <main role="main">
-  <form action="../PROYECTO_BE/Flores.php">
+  <form action="../PROYECTO_BE/Inventario.php" method="POST">
     <div class="jumbotron">
 
         <div class='container'>
-                <h2 class='text-center'>Lista de Distribuidores</h2>
+        <h2 class='text-center'>Inventario</h2>
                 <?php 
               $conexion = oci_connect("hr","hr","localhost/xe");
-              $sql = "SELECT * FROM TBL_DISTRIBUIDOR order by ID_DISTRIBUIDOR";
+              $sql = "SELECT * FROM TBL_INVENTARIOS order by ID_INVENTARIO";
               $stid =oci_parse($conexion,$sql);
               $res = oci_execute($stid);
 
@@ -84,47 +79,65 @@
               print "<tr>\n";
               print "<thead>";
               print "<th>ID</th>";
-              print "<th>NOMBRE</th>";
-              print "<th>Apellido</th>";
-              print "<th>Direccion</th>";
-              print "<th>Telefono</th>";
+              print "<th>ID de flor</th>";
+              print "<th>Vida Util</th>";
+              print "<th>cantidad de Rollos</th>";
+              print "<th>Fecha de Corte</th>";
+              print "<th>Estado</th>";
+              print "<th>Accion</th>";
               print "</thead>";
+              
               while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
               foreach ($row as $item) {
                   print "    <td>" . ($item !== null ? htmlentities($item, ENT_QUOTES) : "&nbsp;") . "</td>\n";
-
               }
-              print "<td><button href='' type='button' class='btn btn-danger'>Eliminar</button></td>";
-              print "<td><button href='' type='button' class='btn btn-warning'>Actualizar</button></td>";
+              ?>
+             <td><a href="../PROYECTO_BE/Inventario.php?delete=<?php echo $row['ID_INVENTARIO']; ?>" class='btn btn-danger' >Eliminar</a>
+                <a href="FE_Inventario.php?edit=<?php echo $row['ID_INVENTARIO']; ?>"class='btn btn-warning'>Actualizar</a></td>
+              <?php
               print "</tr>\n";
               }
               print "</table>\n";
               print "</div>";
-              echo '<button href="Agregar_Flores.html" type="button" class="btn btn-success">Agregar</button>';
               oci_free_statement($stid);
               oci_close($conexion);
-
-
-        ?>  
-
-                 <!--
-                  <label class='col-sm-3 control-label'>ID de Rol</label>
-                <div class='form-group'>
-                    <input type='text' class='form-control' placeholder='' required='required' id='id_rol' name="id_rol"></input>
-                </div>
-              
-                <label class='col-sm-3 control-label'>Nombre de Rol</label>
-                <div class='form-group'>
-                    <input type='text' class='form-control' placeholder='' required='required' id='nom_rol' name="nom_rol"></input>
-                </div>
-                <div  type='submit' onclick='' class='btn btn-primary btn-block'>Agregar</div> -->
-                <!--<input class="invisible" type="button" value="1"  name="id" >-->
-                <!--Funciono el boton
-                <button class='btn btn-primary btn-block' type="submit" value="0" name="id">Agregar</button>
-                <div onClick=''  class='btn btn-sm btn-danger'>Volver</div>
-      -->
-        </div> 
-      
+        ?>
+        <form action="../PROYECTO_BE/Inventario.php" method="POST">
+        <input type="hidden" name="id" value="<?php echo $Iid ; ?>">
+        <div class="jumbotron">
+            <div class='container'>
+                    <h2 class='text-center'>Agregar Inventario </h2>
+                    <label class='col-sm-3 control-label' >Id de Flor</label>
+                    <div class='form-group'>
+                        <input type='text' class='form-control' value="<?php echo $idFlor; ?>"   id='input_IdFlor' name='input_IdFlor'>
+                    </div>
+                    <label class='col-sm-3 control-label'>Vida Util</label>
+                    <div class='form-group'>
+                        <input type='text' class='form-control' value="<?php echo $VidaUtil; ?>"  id='input_VidaUtil' name='input_VidaUtil'>
+                    </div>
+                    <label class='col-sm-3 control-label'>Cantidad de Rollos</label>
+                    <div class='form-group'>
+                        <input type='text' class='form-control'  value="<?php echo $canti; ?>" id='input_CantidadRollos' name='input_CantidadRollos'>
+                    </div>
+                    <label class='col-sm-3 control-label'>Fecha de Corte</label>
+                    <div class='form-group'>
+                        <input type='date' class='form-control'  value="<?php echo $corte_fecha; ?>" id='input_FechaCorte' name='input_FechaCorte'>
+                    </div>
+                    <label class='col-sm-3 control-label'>Estado</label>
+                    <div class='form-group'>
+                        <input type='text' class='form-control'  value="<?php echo $Status; ?>" id='input_Estado' name='input_Estado'>
+                    </div>
+                    <?php 
+                      if($update == true):
+                    ?>
+                    <button class='btn btn-primary btn-block' type="submit" value="2" name='update'>Actualizar</button>
+                      <?php else: ?>
+                    <button class='btn btn-primary btn-block' type="submit" value="1" name='save'>Ingresar</button>
+                      <?php endif; ?>
+            </div>  
+        </div>  
+      </form>
+        </div>     
     </div>  
   </form>
   </main>

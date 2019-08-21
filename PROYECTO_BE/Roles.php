@@ -1,108 +1,62 @@
-<DOCTYPE HTML>
-    <meta charset = "utf8"/>
-    <?php
+<?php
 
     $conexion = oci_connect("hr","hr","localhost/xe");
-    $fun = $_GET['id'];
+    $name = '';
+    $update = false;
+    $Rid  = 0;
+   // debug_to_console($_GET["save"]);
 
-    if(!$conexion){
-        $m = oci_error();
-        echo $m('message'),"n";
-        exit;
-    }else{
-        //echo "Conexion con exito a Oracle";
-        switch($fun){
-            case 0:
-            debug_to_console($fun);
-            listar_rol();
-            break;
 
-            case 1:
-            agregar_rol(); 
-            break;
+    if(isset($_POST['save'])){
 
-            case 2:
-            actualizar_rol();
-            break;
+        $conexion = oci_connect("hr","hr","localhost/xe");    
+        $Rnom = $_REQUEST['nom_rol'];
+        $sql = "CALL INSERTAR_ROL('$Rnom')";
+        $stid = oci_parse($conexion,$sql);
+        oci_execute($stid);
+        oci_free_statement($stid);
+        oci_close($conexion);
+        header('location: ../PROYECTO_FE/FE_Roles.php');
+
+    }
     
-            case 3:
-            eliminar_rol();
-            break;
-        }
+    if(isset($_GET['delete'])){
+
+        $conexion = oci_connect("hr","hr","localhost/xe");
+        $Rid = $_REQUEST['delete'];
+        $sql = "CALL ELIMINAR_ROL($Rid)";
+        $stid = oci_parse($conexion,$sql);
+        oci_execute($stid);
+        oci_free_statement($stid);
+        oci_close($conexion);
+        header('location: ../PROYECTO_FE/FE_Roles.php');
     }
 
-    /* Me gusta como se ve, pero solo me devuelve un 1, Este es de un stored procedure
-    $sql = "CALL PRUEBA()";
-    $stid = oci_parse($conexion,$sql);
-
-    if (!$stid){
-        $e = oci_error($conexion);
-        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
-    }   
-
-    $res = oci_execute($stid);
+    if(isset($_GET['edit'])){
+        
+        $Rid = $_REQUEST['edit'];
+        $update = true;
+        $conexion = oci_connect("hr","hr","localhost/xe"); 
+        $sql1 = "SELECT NOMBRE FROM TBL_ROLES WHERE ID_ROL='$Rid' ";  
+        $stid1 = oci_parse($conexion,$sql1);
+        oci_define_by_name($stid1, 'NOMBRE', $name);
+        oci_execute($stid1);
+            if(count($stid1)==1){
+                $row = oci_fetch_array($stid1, OCI_ASSOC);
+                    $name = $row['NOMBRE'];
+            }
+    }
     
-    print "<table border='1'>\n";
-    while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
-    print "<tr>\n";
-    foreach ($row as $item) {
-        print "    <td>" . ($item !== null ? htmlentities($item, ENT_QUOTES) : "&nbsp;") . "</td>\n";
-    }
-    print "</tr>\n";
-    }
-    print "</table>\n";
-    */
-    function agregar_rol(){
-    $conexion = oci_connect("hr","hr","localhost/xe");    
-    $Rnom = $_GET['nom_rol'];
-    $sql = "CALL INSERTAR_ROL('$Rnom')";
-    $stid = oci_parse($conexion,$sql);
-    oci_execute($stid);
-    oci_free_statement($stid);
-    oci_close($conexion);
-    header('location: ../PROYECTO_FE/Listar_Roles.php');
-    }
-
-    function listar_rol(){
-    $conexion = oci_connect("hr","hr","localhost/xe");
-    $sql = "SELECT * FROM TBL_ROLES";
-    $stid =oci_parse($conexion,$sql);
-    $res = oci_execute($stid);
-
-    print "<table class='table' border='1'>\n";
-    while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
-    print "<tr>\n";
-    foreach ($row as $item) {
-        print "    <td>" . ($item !== null ? htmlentities($item, ENT_QUOTES) : "&nbsp;") . "</td>\n";
-    }
-    print "</tr>\n";
-    }
-    print "</table>\n";
-    oci_free_statement($stid);
-    oci_close($conexion);
-    }
-
-    function actualizar_rol(){
-    $Rid = $_GET['id_rol'];
-    $Rnom = $_GET['nom_rol'];
-    $conexion = oci_connect("hr","hr","localhost/xe");    
-    $sql = "CALL ACTUALIZAR_ROL($Rid,'$Rnom')";
-    $stid = oci_parse($conexion,$sql);
-    oci_execute($stid);
-    oci_free_statement($stid);
-    oci_close($conexion);
-    //header('location: ../PROYECTO_FE/index.html');
-    }
-
-    function eliminar_rol(){
-    $conexion = oci_connect("hr","hr","localhost/xe");
-    $Rid = $_GET['id_rol'];
-    $sql = "CALL ELIMINAR_ROL($Rid)";
-    $stid = oci_parse($conexion,$sql);
-    oci_execute($stid);
-    oci_free_statement($stid);
-    oci_close($conexion);
-    //header('location: ../PROYECTO_FE/index.html');
+    if(isset($_POST['update'])){
+        $rol_id = $_REQUEST['id'];
+        $Rnom = $_REQUEST['nom_rol']; 
+        debug_to_console($_REQUEST['nom_rol']);
+        $sql = "CALL ACTUALIZAR_ROL('$rol_id','$Rnom')";
+        $stid = oci_parse($conexion,$sql);
+        oci_execute($stid);
+        oci_free_statement($stid);
+        oci_close($conexion);
+        header('location: ../PROYECTO_FE/FE_Roles.php');
     }
 
 

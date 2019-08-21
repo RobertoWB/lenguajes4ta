@@ -1,76 +1,70 @@
-<DOCTYPE HTML>
-    <meta charset = "utf8"/>
-    <?php
+<?php
 
     $conexion = oci_connect("hr","hr","localhost/xe");
-    $fun = $_GET['id'];
+    $name = '';
+    $tipo = '';
+    $detalle = '';
+    $update = false;
+    $Fid  = 0;
 
-    if(!$conexion){
-        $m = oci_error();
-        echo $m('message'),"n";
-        exit;
-    }else{
-        //echo "Conexion con exito a Oracle";
-        switch($fun){
-            case 0:
-            //debug_to_console($fun);
-            listar_flor();
-            break;
-
-            case 1:
-            agregar_flor(); 
-            break;
-
-            case 2:
-            actualizar_flor();
-            break;
-    
-            case 3:
-            eliminar_rol();
-            break;
-        }
-    }
-
-    function agregar_flor(){
+if(isset($_GET['save'])){
     $conexion = oci_connect("hr","hr","localhost/xe");    
-    $Fnom = $_GET['nom_flor'];
-    $Ftipo = $_GET['tipo_flor'];
-    $Fdetalle = $_GET['detalles'];
+    $Fnom = $_REQUEST['nom_flor'];
+    $Ftipo = $_REQUEST['tipo_flor'];
+    $Fdetalle = $_REQUEST['detalles'];
     $sql = "CALL INSERTAR_FLORES('$Fnom','$Ftipo','$Fdetalle')";
     $stid = oci_parse($conexion,$sql);
     oci_execute($stid);
     oci_free_statement($stid);
     oci_close($conexion);
-    header('location: ../PROYECTO_FE/Listar_Flores.php');
-    }
+    header('location: ../PROYECTO_FE/FE_Flores.php');
 
+}
 
-    function actualizar_flor(){
-    $Fid = $_GET['id_flor'];
-    $Fnom = $_GET['nom_flor'];
-    $Ftipo = $_GET['tipo_flor'];
-    $Fdetalle = $_GET['detalles'];
-    $conexion = oci_connect("hr","hr","localhost/xe");    
-    $sql = "CALL ACTUALIZAR_FLORES('$Fid','$Fnom','$Ftipo','$Fdetalle')";
-    $stid = oci_parse($conexion,$sql);
-    oci_execute($stid);
-    oci_free_statement($stid);
-    oci_close($conexion);
-    //header('location: ../PROYECTO_FE/index.html');
-    }
-
-    function eliminar_flor(){
+if(isset($_GET['delete'])){
     $conexion = oci_connect("hr","hr","localhost/xe");
-    $Fid = $_GET['id_flor'];
+    $Fid = $_REQUEST['delete'];
     $sql = "CALL ELIMINAR_FLORES($Fid)";
     $stid = oci_parse($conexion,$sql);
     oci_execute($stid);
     oci_free_statement($stid);
     oci_close($conexion);
-    //header('location: ../PROYECTO_FE/index.html');
-    }
+    header('location: ../PROYECTO_FE/FE_Flores.php');
 
+}
 
+if(isset($_GET['edit'])){
+    $Fid = $_REQUEST['edit'];
+    $update = true;
+    $conexion = oci_connect("hr","hr","localhost/xe"); 
+    $sql1 = "SELECT NOMBRE, TIPO, DETALLE FROM TBL_FLORES WHERE ID_FLOR='$Fid' ";  
+    $stid1 = oci_parse($conexion,$sql1);
+    oci_define_by_name($stid1, 'NOMBRE', $name);
+    oci_define_by_name($stid1, 'TIPO', $tipo);
+    oci_define_by_name($stid1, 'DETALLE', $detalle);
+    oci_execute($stid1);
+        if(count($stid1)==1){
+            $row = oci_fetch_array($stid1, OCI_ASSOC);
+                $name = $row['NOMBRE'];
+                $tipo = $row['TIPO'];
+                $detalle = $row['DETALLE'];
+        }
+}
+
+if(isset($_GET['update'])){
+    debug_to_console("update");
+    $Flor_id = $_REQUEST['id'];
+    $Fnom = $_REQUEST['nom_flor'];
+    $Ftipo = $_REQUEST['tipo_flor'];
+    $Fdetalle = $_REQUEST['detalles'];
+    $conexion = oci_connect("hr","hr","localhost/xe");    
+    $sql = "CALL ACTUALIZAR_FLORES('$Flor_id','$Fnom','$Ftipo','$Fdetalle')";
+    $stid = oci_parse($conexion,$sql);
+    oci_execute($stid);
+    oci_free_statement($stid);
+    oci_close($conexion);
+    header('location: ../PROYECTO_FE/FE_Flores.php');
+}
     function debug_to_console( $data ) {
         $output = $data;
         if ( is_array( $output ) )

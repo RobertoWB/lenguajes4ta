@@ -1,74 +1,79 @@
-<DOCTYPE HTML>
-    <meta charset = "utf8"/>
+<meta charset = "utf8"/>
     <?php
 
     $conexion = oci_connect("hr","hr","localhost/xe");
-    //Aqui se obtiene el id para que se meta en el switch
-    $fun = $_GET['id'];
+    $update = false;
+    $Pid  = 0;
+    $idFlor  = "";
+    $fechaEntrega  = "";
+    $cantidad  = "";
+    $fechaPedido  = "";
 
-    if(!$conexion){
-        $m = oci_error();
-        echo $m('message'),"n";
-        exit;
-    }else{
-        //echo "Conexion con exito a Oracle";
-        switch($fun){
-            case 0:
-            agregar_pedido(); 
-            break;
+ 
+    if(isset($_POST['save'])){
+        $conexion = oci_connect("hr","hr","localhost/xe");    
+        $Pflor = $_REQUEST['input_IdFlor'];
+        $PCantidad = $_REQUEST['input_CantidadRollos'];
+        $Pfecha_entrega = $_REQUEST['input_FechaEntrega'];
+        $newDate = date("d/m/y", strtotime($Pfecha_entrega));
+        $Pfecha_pedido = $_REQUEST['input_FechaPedido'];
+        $newDate2 = date("d/m/y", strtotime($Pfecha_pedido));
+        $sql = "CALL INSERTAR_PEDIDOS('$Pflor','$PCantidad','$newDate','$newDate2')";
+        $stid = oci_parse($conexion,$sql);
+        oci_execute($stid);
+        oci_free_statement($stid);
+        oci_close($conexion);
+        header('location: ../PROYECTO_FE/FE_Pedidos.php');
 
-            case 1:
-            actualizar_pedido();
-            break;
+    }
     
-            case 2:
-            eliminar_pedido();
-            break;
-        }
+    if(isset($_GET['delete'])){
+        $conexion = oci_connect("hr","hr","localhost/xe");
+        $Pid = $_REQUEST['delete'];
+        $sql = "CALL ELIMINAR_PEDIDOS($Pid)";
+        $stid = oci_parse($conexion,$sql);
+        oci_execute($stid);
+        oci_free_statement($stid);
+        oci_close($conexion);
+        header('location: ../PROYECTO_FE/FE_Pedidos.php');
     }
 
-    function agregar_pedido(){
+    if(isset($_GET['edit'])){
+        $Pid = $_REQUEST['edit'];
+        $update = true;
+        $conexion = oci_connect("hr","hr","localhost/xe"); 
+        $sql1 = "SELECT ID_FLOR, CANTIDAD, FECHA_ENTREGA, FECHA_PEDIDO FROM TBL_PEDIDOS WHERE ID_PEDIDO='$Pid' ";  
+        $stid1 = oci_parse($conexion,$sql1);
+        oci_define_by_name($stid1, 'ID_FLOR', $idFlor);
+        oci_define_by_name($stid1, 'CANTIDAD', $cantidad);
+        oci_define_by_name($stid1, 'FECHA_ENTREGA', $fechaEntrega);
+        oci_define_by_name($stid1, 'FECHA_PEDIDO', $fechaPedido);
+        oci_execute($stid1);
+            if(count($stid1)==1){
+                $row = oci_fetch_array($stid1, OCI_ASSOC);
+                    $idFlor = $row['ID_FLOR'];
+                    $fechaEntrega =  date("Y-m-d",strtotime($row['FECHA_ENTREGA']));
+                    $cantidad = $row['CANTIDAD'];
+                    $fechaPedido = date("Y-m-d",strtotime($row['FECHA_PEDIDO']));
+            }
+    }
+    if(isset($_POST['update'])){
+        $Pid = $_REQUEST['id'];
+        $Pflor = $_REQUEST['input_IdFlor'];
+        $PCantidad = $_REQUEST['input_CantidadRollos'];
+        $Pfecha_entrega = $_REQUEST['input_FechaEntrega'];
+        $newDate = date("d/m/y", strtotime($Pfecha_entrega));
+        $Pfecha_pedido = $_REQUEST['input_FechaPedido'];
+        $newDate2 = date("d/m/y", strtotime($Pfecha_pedido));
     $conexion = oci_connect("hr","hr","localhost/xe");    
-    $Pflor = $_GET[''];
-    $PCantidad = $_GET[''];
-    $Pfecha_entrega = $_GET[''];
-    $Pfecha_pedido = $_GET[''];
-    $sql = "CALL INSERTAR_PEDIDOS('$Pflor','$Pcantidad','$Pfecha_entrega','$Pfecha_pedido')";
+    $sql = "CALL ACTUALIZAR_PEDIDOS('$Pid','$Pflor','$PCantidad','$newDate','$newDate2')";
     $stid = oci_parse($conexion,$sql);
     oci_execute($stid);
     oci_free_statement($stid);
     oci_close($conexion);
-    header('location: ../PROYECTO_FE/Listar_Inventario.php');
+    header('location: ../PROYECTO_FE/FE_Pedidos.php');
+
     }
-
-
-    function actualizar_pedido(){
-        $Pid = $_GET[''];
-        $Pflor = $_GET[''];
-        $PCantidad = $_GET[''];
-        $Pfecha_entrega = $_GET[''];
-        $Pfecha_pedido = $_GET[''];
-    $conexion = oci_connect("hr","hr","localhost/xe");    
-    $sql = "CALL ACTUALIZAR_PEDIDOS('$Pid','$Pflor','$Pcantidad','$Pfecha_entrega','$Pfecha_pedido')";
-    $stid = oci_parse($conexion,$sql);
-    oci_execute($stid);
-    oci_free_statement($stid);
-    oci_close($conexion);
-    //header('location: ../PROYECTO_FE/index.html');
-    }
-
-    function eliminar_pedido(){
-    $conexion = oci_connect("hr","hr","localhost/xe");
-    //Id del inventario
-    $Pid = $_GET[''];
-    $sql = "CALL ELIMINAR_PEDIDOS($Pid)";
-    $stid = oci_parse($conexion,$sql);
-    oci_execute($stid);
-    oci_free_statement($stid);
-    oci_close($conexion);
-    //header('location: ../PROYECTO_FE/index.html');
-    }
-
 
     function debug_to_console( $data ) {
         $output = $data;
@@ -78,6 +83,7 @@
         echo "<script>console.log( 'Debug Objects: " . $output . "' );</script>";
         
     }
+
 
     oci_close($conexion);
 

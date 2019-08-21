@@ -1,4 +1,3 @@
-
 <html lang="en">
     <head>
       <meta charset="utf-8">
@@ -10,7 +9,7 @@
   
       <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/jumbotron/">
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  
+      <link rel="stylesheet" href="../CSS/custom.css">
       <!-- Bootstrap core CSS -->
   <link href="/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
       <style>
@@ -67,74 +66,81 @@
        -->
     </div>
   </nav>
-  
+  <?php require_once '../PROYECTO_BE/Distribuidor.php' ?>
   <main role="main">
-
+  <form action="../PROYECTO_BE/Distribuidor.php">
     <div class="jumbotron">
+
         <div class='container'>
-                <h2 class='text-center'>Actualizar Ventas</h2>
-                <label class='col-sm-3 control-label'>ID ventas</label>
-                <div class='form-group'>
-                    <input type='text' class='form-control' placeholder='' required='required' id='inputVentas' disabled></input>
-                </div>
-                <label class='col-sm-3 control-label'>Nombre del Cliente</label>
-                <div class='form-group'>
-                    <input type='text' class='form-control' placeholder='' required='required' id='input_NomCliente'></input>
-                </div>
-                <label class='col-sm-3 control-label'>ID de flor</label>
-                <div class='form-group'>
-                    <input type='text' class='form-control' placeholder='' required='required' id='input_IdFlor' ></input>
-                </div>
-                <label class='col-sm-3 control-label'>Cantidad</label>
-                <div class='form-group'>
-                    <input type='number' class='form-control' placeholder='' required='required' id='inputCantidad'></input>
-                </div>
-                <label class='col-sm-3 control-label'>Fecha de venta</label>
-                <div class='form-group'>
-                    <input type='date' class='form-control' placeholder='' required='required' id='input_FechaVenta'></input>
-                </div>
-                <div onclick='' class='btn btn-primary btn-block'>Actualizar</div>
-                <div onClick='' class='btn btn-sm btn-danger'>Volver</div>
-        </div>  
-    </div>  
-    <!-- Main jumbotron for a primary marketing message or call to action 
-    <div class="jumbotron">
-      <div class="container">
-        <h1 class="display-3">Hello, world!</h1>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
-      </div>
-    </div>
+                <h2 class='text-center'>Lista de Distribuidores</h2>
+                <?php 
+              $conexion = oci_connect("hr","hr","localhost/xe");
+              $sql = "SELECT * FROM TBL_DISTRIBUIDOR order by ID_DISTRIBUIDOR";
+              $stid =oci_parse($conexion,$sql);
+              $res = oci_execute($stid);
 
-    <div class="container">
-       Example row of columns
+              print "<div class='container'>";
+              print "<table class='table table-hover' >\n";
+              print "<tr>\n";
+              print "<thead>";
+              print "<th>ID</th>";
+              print "<th>NOMBRE</th>";
+              print "<th>Apellido</th>";
+              print "<th>Direccion</th>";
+              print "<th>Telefono</th>";
+              print "</thead>";
+              while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+              foreach ($row as $item) {
+                  print "    <td>" . ($item !== null ? htmlentities($item, ENT_QUOTES) : "&nbsp;") . "</td>\n";
+
+              }
+              ?>
+             <td><a href="../PROYECTO_BE/DISTRIBUIDOR.php?delete=<?php echo $row['ID_DISTRIBUIDOR']; ?>" class='btn btn-danger' >Eliminar</a>
+                <a href="FE_DISTRIBUIDOR.php?edit=<?php echo $row['ID_DISTRIBUIDOR']; ?>"class='btn btn-warning'>Actualizar</a></td>
+              <?php
+              print "</tr>\n";
+              }
+              print "</table>\n";
+              print "</div>";
+              oci_free_statement($stid);
+              oci_close($conexion);
+        ?>  
+        <form action="../PROYECTO_BE/Distribuidor.php" method="POST">;
+        <input type="hidden" name="id" value="<?php echo $Did ; ?>">
+        <div class="jumbotron">
+            <div class='container'>
+                    <h2 class='text-center'>Agregar Distribuidor </h2>
+                    <label class='col-sm-3 control-label'>Nombre</label>
+                    <div class='form-group'>
+                        <input type='text' class='form-control' value="<?php echo $name; ?>" id='inputNombre' name='inputNombre'>
+                    </div>
+                    <label class='col-sm-3 control-label'>Apellido</label>
+                    <div class='form-group'>
+                        <input type='text' class='form-control' value="<?php echo $surn; ?>" id='inputApellido' name='inputApellido'>
+                    </div>
+                    <label class='col-sm-3 control-label'>Direccion</label>
+                    <div class='form-group'>
+                        <input type='text' class='form-control' value="<?php echo $direc; ?>" id='inputDireccion' name='inputDireccion'>
+                    </div>
+                    <label class='col-sm-3 control-label'>Telefono</label>
+                    <div class='form-group'>
+                        <input type='text' class='form-control' value="<?php echo $tele; ?>" id='inputTelefono' name='inputTelefono'>
+                    </div>
+                    <?php 
+                      if($update == true):
+                    ?>
+                    <button class='btn btn-primary btn-block' type="submit" value="2" name='update'>Actualizar</button>
+                      <?php else: ?>
+                    <button class='btn btn-primary btn-block' type="submit" value="1" name='save'>Ingresar</button>
+                      <?php endif; ?>
+            </div>  
+        </div>  
+      </form>
+        </div> 
       
-      <div class="row">
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-        </div>
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-        </div>
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-        </div>
-      </div>
-     -->
-      <hr>
-    </div> <!-- /container -->
+    </div>  
+  </form>
   </main>
-  <!--
-  <footer class="container">
-    <p>&copy; Company 2017-2019</p>
-  </footer>
-  -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script>window.jQuery || document.write('<script src="/docs/4.3/assets/js/vendor/jquery-slim.min.js"><\/script>')</script><script src="/docs/4.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

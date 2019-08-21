@@ -1,72 +1,74 @@
-<DOCTYPE HTML>
-    <meta charset = "utf8"/>
-    <?php
+<?php
 
     $conexion = oci_connect("hr","hr","localhost/xe");
-    $fun = $_GET['id'];
+    $name = '';
+    $surn = '';
+    $direc = '';
+    $tele = '';
+    $update = false;
+    $Did  = 0;
+   // debug_to_console($_GET["save"]);
 
-    if(!$conexion){
-        $m = oci_error();
-        echo $m('message'),"n";
-        exit;
-    }else{
-        //echo "Conexion con exito a Oracle";
-        switch($fun){
-            case 0:
-            agregar_distribuidor(); 
-            break;
-
-            case 1:
-            actualizar_distribuidor();
-            break;
+    if(isset($_GET['save'])){
+        $conexion = oci_connect("hr","hr","localhost/xe");    
+        $Dnom = $_REQUEST['inputNombre'];
+        $Apellido = $_REQUEST['inputApellido'];
+        $Direccion = $_REQUEST['inputDireccion'];
+        $Telefono = $_REQUEST['inputTelefono'];
+        $sql = "CALL INSERTAR_DISTRIBUIDOR('$Dnom','$Apellido','$Direccion','$Telefono')";
+        $stid = oci_parse($conexion,$sql);
+        oci_execute($stid);
+        oci_free_statement($stid);
+        oci_close($conexion);
+        header('location: ../PROYECTO_FE/FE_Distribuidor.php');
+    }
     
-            case 2:
-            eliminar_distribuidor();
-            break;
-        }
+    if(isset($_GET['delete'])){
+        $conexion = oci_connect("hr","hr","localhost/xe");
+        $Did = $_REQUEST['delete'];
+        $sql = "CALL ELIMINAR_DISTRIBUIDOR($Did)";
+        $stid = oci_parse($conexion,$sql);
+        oci_execute($stid);
+        oci_free_statement($stid);
+        oci_close($conexion);
+        header('location: ../PROYECTO_FE/FE_Distribuidor.php');
+
     }
 
-    function agregar_distribuidor(){
-    $conexion = oci_connect("hr","hr","localhost/xe");    
-    $Dnom = $_GET['inputNombre'];
-    $Apellido = $_GET['inputApellido'];
-    $Direccion = $_GET['inputDireccion'];
-    $Telefono = $_GET['inputTelefono'];
-    $sql = "CALL INSERTAR_DISTRIBUIDOR('$Dnom','$Apellido','$Direccion','$Telefono')";
-    $stid = oci_parse($conexion,$sql);
-    oci_execute($stid);
-    oci_free_statement($stid);
-    oci_close($conexion);
-    header('location: ../PROYECTO_FE/Listar_Distribuidor.php');
+    if(isset($_GET['edit'])){
+        $Did = $_REQUEST['edit'];
+        $update = true;
+        $conexion = oci_connect("hr","hr","localhost/xe"); 
+        $sql1 = "SELECT NOMBRE, APELLIDO, DIRECCION, TELEFONO FROM TBL_DISTRIBUIDOR WHERE ID_DISTRIBUIDOR='$Did' ";  
+        $stid1 = oci_parse($conexion,$sql1);
+        oci_define_by_name($stid1, 'NOMBRE', $name);
+        oci_define_by_name($stid1, 'APELLIDO', $surn);
+        oci_define_by_name($stid1, 'DIRECCION', $direc);
+        oci_define_by_name($stid1, 'TELENOFO', $tele);
+        oci_execute($stid1);
+            if(count($stid1)==1){
+                $row = oci_fetch_array($stid1, OCI_ASSOC);
+                    $name = $row['NOMBRE'];
+                    $surn = $row['APELLIDO'];
+                    $direc = $row['DIRECCION'];
+                    $tele = $row['TELEFONO'];
+            }
     }
 
-
-    function actualizar_distribuidor(){
-    $Did = $_GET['id_Distribuidor'];
-    $Dnom = $_GET['inputNombre'];
-    $Apellido = $_GET['inputApellido'];
-    $Direccion = $_GET['inputDireccion'];
-    $Telefono = $_GET['inputTelefono'];
-    $conexion = oci_connect("hr","hr","localhost/xe");    
-    $sql = "CALL ACTUALIZAR_DISTRIBUIDOR('$Did','$Dnom','$Apellido','$Direccion','$Telefono')";
-    $stid = oci_parse($conexion,$sql);
-    oci_execute($stid);
-    oci_free_statement($stid);
-    oci_close($conexion);
-    //header('location: ../PROYECTO_FE/index.html');
+    if(isset($_GET['update'])){
+        $Distri_id = $_REQUEST['id'];
+        $Dnom = $_REQUEST['inputNombre'];
+        $Apellido = $_REQUEST['inputApellido'];
+        $Direccion = $_REQUEST['inputDireccion'];
+        $Telefono = $_REQUEST['inputTelefono'];
+        $conexion = oci_connect("hr","hr","localhost/xe");    
+        $sql = "CALL ACTUALIZAR_DISTRIBUIDOR('$Distri_id','$Dnom','$Apellido','$Direccion','$Telefono')";
+        $stid = oci_parse($conexion,$sql);
+        oci_execute($stid);
+        oci_free_statement($stid);
+        oci_close($conexion);
+        header('location: ../PROYECTO_FE/FE_Distribuidor.php');
     }
-
-    function eliminar_distribuidor(){
-    $conexion = oci_connect("hr","hr","localhost/xe");
-    $Did = $_GET['id_Distribuidor'];
-    $sql = "CALL ELIMINAR_DISTRIBUIDOR($Did)";
-    $stid = oci_parse($conexion,$sql);
-    oci_execute($stid);
-    oci_free_statement($stid);
-    oci_close($conexion);
-    //header('location: ../PROYECTO_FE/index.html');
-    }
-
 
     function debug_to_console( $data ) {
         $output = $data;
