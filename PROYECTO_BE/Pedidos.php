@@ -18,7 +18,7 @@
         $newDate = date("d/m/y", strtotime($Pfecha_entrega));
         $Pfecha_pedido = $_REQUEST['input_FechaPedido'];
         $newDate2 = date("d/m/y", strtotime($Pfecha_pedido));
-        $sql = "CALL INSERTAR_PEDIDOS('$Pflor','$PCantidad','$newDate','$newDate2')";
+        $sql = "CALL PKG_PEDIDOS.INSERTAR_PEDIDOS('$Pflor','$PCantidad','$newDate','$newDate2')";
         $stid = oci_parse($conexion,$sql);
         oci_execute($stid);
         oci_free_statement($stid);
@@ -30,7 +30,7 @@
     if(isset($_GET['delete'])){
         $conexion = oci_connect("hr","hr","localhost/xe");
         $Pid = $_REQUEST['delete'];
-        $sql = "CALL ELIMINAR_PEDIDOS($Pid)";
+        $sql = "CALL PKG_PEDIDOS.ELIMINAR_PEDIDOS($Pid)";
         $stid = oci_parse($conexion,$sql);
         oci_execute($stid);
         oci_free_statement($stid);
@@ -66,7 +66,7 @@
         $Pfecha_pedido = $_REQUEST['input_FechaPedido'];
         $newDate2 = date("d/m/y", strtotime($Pfecha_pedido));
     $conexion = oci_connect("hr","hr","localhost/xe");    
-    $sql = "CALL ACTUALIZAR_PEDIDOS('$Pid','$Pflor','$PCantidad','$newDate','$newDate2')";
+    $sql = "CALL PKG_PEDIDOS.ACTUALIZAR_PEDIDOS('$Pid','$Pflor','$PCantidad','$newDate','$newDate2')";
     $stid = oci_parse($conexion,$sql);
     oci_execute($stid);
     oci_free_statement($stid);

@@ -15,7 +15,7 @@
         $Apellido = $_REQUEST['inputApellido'];
         $Direccion = $_REQUEST['inputDireccion'];
         $Telefono = $_REQUEST['inputTelefono'];
-        $sql = "CALL INSERTAR_DISTRIBUIDOR('$Dnom','$Apellido','$Direccion','$Telefono')";
+        $sql = "CALL PKG_DISTRIBUIDOR.INSERTAR_DISTRIBUIDOR('$Dnom','$Apellido','$Direccion','$Telefono')";
         $stid = oci_parse($conexion,$sql);
         oci_execute($stid);
         oci_free_statement($stid);
@@ -26,7 +26,7 @@
     if(isset($_GET['delete'])){
         $conexion = oci_connect("hr","hr","localhost/xe");
         $Did = $_REQUEST['delete'];
-        $sql = "CALL ELIMINAR_DISTRIBUIDOR($Did)";
+        $sql = "CALL PKG_DISTRIBUIDOR.ELIMINAR_DISTRIBUIDOR($Did)";
         $stid = oci_parse($conexion,$sql);
         oci_execute($stid);
         oci_free_statement($stid);
@@ -62,7 +62,7 @@
         $Direccion = $_REQUEST['inputDireccion'];
         $Telefono = $_REQUEST['inputTelefono'];
         $conexion = oci_connect("hr","hr","localhost/xe");    
-        $sql = "CALL ACTUALIZAR_DISTRIBUIDOR('$Distri_id','$Dnom','$Apellido','$Direccion','$Telefono')";
+        $sql = "CALL PKG_DISTRIBUIDOR.ACTUALIZAR_DISTRIBUIDOR('$Distri_id','$Dnom','$Apellido','$Direccion','$Telefono')";
         $stid = oci_parse($conexion,$sql);
         oci_execute($stid);
         oci_free_statement($stid);

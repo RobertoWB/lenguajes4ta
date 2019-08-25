@@ -10,7 +10,7 @@
     if(isset($_POST['save'])){
         $conexion = oci_connect("hr","hr","localhost/xe");    
         $Rnom = $_REQUEST['nom_rol'];
-        $sql = "CALL INSERTAR_ROL('$Rnom')";
+        $sql = "CALL PKG_ROLES.INSERTAR_ROL('$Rnom')";
         $stid = oci_parse($conexion,$sql);
         oci_execute($stid);
         oci_free_statement($stid);
@@ -22,7 +22,7 @@
     if(isset($_GET['delete'])){
         $conexion = oci_connect("hr","hr","localhost/xe");
         $Rid = $_REQUEST['delete'];
-        $sql = "CALL ELIMINAR_ROL($Rid)";
+        $sql = "CALL PKG_ROLES.ELIMINAR_ROL($Rid)";
         $stid = oci_parse($conexion,$sql);
         oci_execute($stid);
         oci_free_statement($stid);
@@ -47,7 +47,7 @@
         $rol_id = $_REQUEST['id'];
         $Rnom = $_REQUEST['nom_rol']; 
         debug_to_console($_REQUEST['nom_rol']);
-        $sql = "CALL ACTUALIZAR_ROL('$rol_id','$Rnom')";
+        $sql = "CALL PKG_ROLES.ACTUALIZAR_ROL('$rol_id','$Rnom')";
         $stid = oci_parse($conexion,$sql);
         oci_execute($stid);
         oci_free_statement($stid);

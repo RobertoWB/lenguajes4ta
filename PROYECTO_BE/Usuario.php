@@ -2,6 +2,7 @@
     <?php
 
     $conexion = oci_connect("hr","hr","localhost/xe");
+    debug_to_console("HOLA") ;
     $rol = '';
     $name = '';
     $ape = '';
@@ -18,7 +19,7 @@
         $Uapellido = $_REQUEST['apellido'];
         $Unick = $_REQUEST['nick'];
         $Upass = $_REQUEST['pass'];
-        $sql = "CALL INSERTAR_USUARIO('$Urol','$Unom','$Uapellido','$Unick','$Upass')";
+        $sql = "CALL PKG_USUARIOS.INSERTAR_USUARIO('$Urol','$Unom','$Uapellido','$Unick','$Upass')";
         $stid = oci_parse($conexion,$sql);
         oci_execute($stid);
         oci_free_statement($stid);
@@ -31,7 +32,7 @@
     if(isset($_GET['delete'])){
         $conexion = oci_connect("hr","hr","localhost/xe");
         $Uid = $_REQUEST['delete'];
-        $sql = "CALL ELIMINAR_USUARIO($Uid)";
+        $sql = "CALL PKG_USUARIOS.ELIMINAR_USUARIO($Uid)";
         $stid = oci_parse($conexion,$sql);
         oci_execute($stid);
         oci_free_statement($stid);
@@ -72,7 +73,7 @@
         $Unick = $_REQUEST['nick'];
         $Upass = $_REQUEST['pass'];
     $conexion = oci_connect("hr","hr","localhost/xe");    
-    $sql = "CALL ACTUALIZAR_USUARIO('$Uid','$Urol','$Unom','$Uapellido','$Unick','$Upass')";
+    $sql = "CALL PKG_USUARIOS.ACTUALIZAR_USUARIO('$Uid','$Urol','$Unom','$Uapellido','$Unick','$Upass')";
     $stid = oci_parse($conexion,$sql);
     oci_execute($stid);
     oci_free_statement($stid);

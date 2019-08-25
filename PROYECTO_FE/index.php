@@ -93,6 +93,9 @@
       <div class="col-md-4">
         <h2 class='text-center'>Top de flor mas vendida</h2>
         <div class='container'>
+        <?php
+        echo phpinfo();
+        ?>
                 <?php 
               $conexion = oci_connect("hr","hr","localhost/xe");
               $sql = "SELECT * FROM FLOR_VENTAS";

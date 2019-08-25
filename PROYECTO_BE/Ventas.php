@@ -20,7 +20,7 @@
         $Vcantidad = $_REQUEST['inputCantidad'];
         $Vfecha_venta = $_REQUEST['inputFecha'];
         $newDate = date("d/m/y", strtotime($Vfecha_venta));
-        $sql = "CALL INSERTAR_VENTAS('$Vflor','$Vusuario','$Vnombre_cliente','$Vcantidad','$newDate')";
+        $sql = "CALL PKG_VENTAS.INSERTAR_VENTAS('$Vflor','$Vusuario','$Vnombre_cliente','$Vcantidad','$newDate')";
         $stid = oci_parse($conexion,$sql);
         oci_execute($stid);
         oci_free_statement($stid);
@@ -32,7 +32,7 @@
 
         $conexion = oci_connect("hr","hr","localhost/xe");
         $Vid = $_REQUEST['delete'];
-        $sql = "CALL ELIMINAR_VENTAS($Vid)";
+        $sql = "CALL PKG_VENTAS.ELIMINAR_VENTAS($Vid)";
         $stid = oci_parse($conexion,$sql);
         oci_execute($stid);
         oci_free_statement($stid);
@@ -73,7 +73,7 @@
         $Vfecha_venta = $_REQUEST['inputFecha'];
         $newDate = date("d/m/y", strtotime($Vfecha_venta));
     $conexion = oci_connect("hr","hr","localhost/xe");    
-    $sql = "CALL ACTUALIZAR_VENTAS('$Vid','$Vflor','$Vusuario','$Vnombre_cliente','$Vcantidad','$newDate')";
+    $sql = "CALL PKG_VENTAS.ACTUALIZAR_VENTAS('$Vid','$Vflor','$Vusuario','$Vnombre_cliente','$Vcantidad','$newDate')";
     $stid = oci_parse($conexion,$sql);
     oci_execute($stid);
     oci_free_statement($stid);

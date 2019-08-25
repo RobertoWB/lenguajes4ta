@@ -12,7 +12,7 @@ if(isset($_GET['save'])){
     $Fnom = $_REQUEST['nom_flor'];
     $Ftipo = $_REQUEST['tipo_flor'];
     $Fdetalle = $_REQUEST['detalles'];
-    $sql = "CALL INSERTAR_FLORES('$Fnom','$Ftipo','$Fdetalle')";
+    $sql = "CALL PKG_FLORES.INSERTAR_FLORES('$Fnom','$Ftipo','$Fdetalle')";
     $stid = oci_parse($conexion,$sql);
     oci_execute($stid);
     oci_free_statement($stid);
@@ -24,7 +24,7 @@ if(isset($_GET['save'])){
 if(isset($_GET['delete'])){
     $conexion = oci_connect("hr","hr","localhost/xe");
     $Fid = $_REQUEST['delete'];
-    $sql = "CALL ELIMINAR_FLORES($Fid)";
+    $sql = "CALL PKG_FLORES.ELIMINAR_FLORES($Fid)";
     $stid = oci_parse($conexion,$sql);
     oci_execute($stid);
     oci_free_statement($stid);
@@ -58,7 +58,7 @@ if(isset($_GET['update'])){
     $Ftipo = $_REQUEST['tipo_flor'];
     $Fdetalle = $_REQUEST['detalles'];
     $conexion = oci_connect("hr","hr","localhost/xe");    
-    $sql = "CALL ACTUALIZAR_FLORES('$Flor_id','$Fnom','$Ftipo','$Fdetalle')";
+    $sql = "CALL PKG_FLORES.ACTUALIZAR_FLORES('$Flor_id','$Fnom','$Ftipo','$Fdetalle')";
     $stid = oci_parse($conexion,$sql);
     oci_execute($stid);
     oci_free_statement($stid);

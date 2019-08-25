@@ -22,7 +22,7 @@
         $newDate = date("d/m/y", strtotime($Ifecha_corte));
         //debug_to_console($newDate);
         $Iestado = $_REQUEST['input_Estado'];
-        $sql = "CALL INSERTAR_INVENTARIO('$Iflor','$Ivida_util','$ICantidad','$newDate','$Iestado')";
+        $sql = "CALL PKG_INVENTARIOS.INSERTAR_INVENTARIO('$Iflor','$Ivida_util','$ICantidad','$newDate','$Iestado')";
         $stid = oci_parse($conexion,$sql);
         oci_execute($stid);
         oci_free_statement($stid);
@@ -33,7 +33,7 @@
     if(isset($_GET['delete'])){
         $conexion = oci_connect("hr","hr","localhost/xe");
         $Iid = $_REQUEST['delete'];
-        $sql = "CALL ELIMINAR_INVENTARIO($Iid)";
+        $sql = "CALL PKG_INVENTARIOS.ELIMINAR_INVENTARIO($Iid)";
         $stid = oci_parse($conexion,$sql);
         oci_execute($stid);
         oci_free_statement($stid);
@@ -73,7 +73,7 @@
         $newDate = date("d/m/y", strtotime($Ifecha_corte));
         $Iestado = $_REQUEST['input_Estado'];
     $conexion = oci_connect("hr","hr","localhost/xe");    
-    $sql = "CALL ACTUALIZAR_INVENTARIO('$Iid','$Iflor','$Ivida_util','$ICantidad','$newDate','$Iestado')";
+    $sql = "CALL PKG_INVENTARIOS.ACTUALIZAR_INVENTARIO('$Iid','$Iflor','$Ivida_util','$ICantidad','$newDate','$Iestado')";
     $stid = oci_parse($conexion,$sql);
     oci_execute($stid);
     oci_free_statement($stid);
